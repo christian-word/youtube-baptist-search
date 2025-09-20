@@ -2,8 +2,3 @@
   publish = "public"          # статика
   functions = "netlify/functions"
 
-[[headers]]
-  for = "/*"
-  [headers.values]
-    # если вдруг захотите разрешить CORS со сторонних доменов
-    Access-Control-Allow-Origin = "*"
