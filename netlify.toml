@@ -1,3 +1,3 @@
-﻿[build]
-  publish = "public" 
+[build]
+  publish = "public"          # статика
   functions = "netlify/functions"
