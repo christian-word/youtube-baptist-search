@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Баптистский поисковик</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        input { width: 70%; padding: 10px; }
+        button { padding: 10px 20px; }
+        .videos { display: flex; flex-wrap: wrap; justify-content: space-around; }
+        .video { width: 45%; margin: 10px 0; }
+        iframe { width: 100%; height: 250px; }
+    </style>
+</head>
+<body>
+    <h1>Баптистский поисковик проповедей</h1>
+    <p>Введите тему (например, "крещение" или "спасение"):</p>
+    <input type="text" id="query" placeholder="Тема проповеди">
+    <button onclick="searchVideos()">Поиск</button>
+    <div id="results" class="videos"></div>
+
+    <script>
+        async function searchVideos() {
+            const query = document.getElementById('query').value.trim();
+            if (!query) return alert('Введите тему!');
+
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<p>Загрузка...</p>';
+
+            try {
+                const response = await fetch(`/.netlify/functions/youtube-proxy?query=${encodeURIComponent(query)}`);
+                if (!response.ok) throw new Error('Ошибка запроса');
+                
+                const data = await response.json();
+                resultsDiv.innerHTML = '';
+
+                if (data.length === 0) {
+                    resultsDiv.innerHTML = '<p>Ничего не найдено. Попробуйте другую тему.</p>';
+                    return;
+                }
+
+                data.slice(0, 6).forEach(video => {
+                    const videoDiv = document.createElement('div');
+                    videoDiv.className = 'video';
+                    videoDiv.innerHTML = `
+                        <h3>${video.title}</h3>
+                        <iframe src="https://www.youtube.com/embed/${video.id}" frameborder="0" allowfullscreen></iframe>
+                    `;
+                    resultsDiv.appendChild(videoDiv);
+                });
+            } catch (error) {
+                resultsDiv.innerHTML = `<p>Ошибка: ${error.message}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>
