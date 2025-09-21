@@ -1,4 +1,4 @@
-﻿// netlify/functions/youtube-proxy.js
+// netlify/functions/youtube-proxy.js
 const RSS_URL = 'https://www.youtube.com/feeds/videos.xml?search_query=';
 
 exports.handler = async (event, context) => {
